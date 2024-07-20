@@ -16,7 +16,7 @@ exports.dashboard = async(req,res) =>{
         const notes = await Note.aggregate([
             {
                 $sort: {
-                    createdAt: -1,
+                    updatedAt: -1,
                 }
             },
             {
@@ -67,7 +67,7 @@ exports.dashboardUpdateNote = async(req,res) =>{
     try {
         await Note.findOneAndUpdate(
             { _id: req.params.id },
-            { title: req.body.title, body: req.body.body}
+            { title: req.body.title, body: req.body.body, updatedAt: Date.now()}
         )
         res.redirect('/dashboard')
     } catch (error) {
@@ -97,6 +97,40 @@ exports.dashboardAddNoteSubmit = async(req,res) =>{
         
         await Note.create(req.body)
         res.redirect('/dashboard')
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+exports.dashboardSearch = async(req,res) =>{
+    try {
+        res.render('dashboard/search', {
+            searchResults: '',
+            layout: '../views/layouts/dashboard'
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+exports.dashboardSearchSubmit = async(req,res) =>{
+    try {
+        
+        let searchTerm = req.body.searchTerm
+        const searchNoSpecialChars = searchTerm.replace(/[^a-zA-Z0-9 ]/g, "")
+            const searchResults = await Note.find({
+                $or: [
+                    {title: { $regex: new RegExp(searchNoSpecialChars, 'i')}},
+                    {body: { $regex: new RegExp(searchNoSpecialChars, 'i')}},
+                ]
+            })
+        
+            res.render('dashboard/search', {
+                searchResults,
+                layout: '../views/layouts/dashboard'
+            })
+
 
     } catch (error) {
         console.log(error);
