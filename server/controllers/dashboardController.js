@@ -2,6 +2,7 @@ const Note = require('../models/Notes')
 const User = require('../models/Users')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 //Dashboard
 exports.dashboard = async(req,res) =>{
@@ -38,6 +39,7 @@ exports.dashboard = async(req,res) =>{
         const count = await Note.countDocuments();
     
         res.render('dashboard/index', {
+            userName: req.user.name,
             locals,
             notes,
             layout: '../views/layouts/dashboard',
@@ -183,20 +185,24 @@ exports.userRegisterSumit = async(req,res) =>{
     }
 }
 
-exports.userLoginSubmit = async(req,res) =>{
+exports.userLoginSubmit = async (req, res) => {
     try {
-        const {email, password} = req.body
+        const { email, password } = req.body;
 
-        const user = await User.findOne({email: email})
-        if(!user) {
-            //change this later
+        const user = await User.findOne({ email });
+        if (!user) {
             return res.status(400).send('Invalid username or password');
         }
 
-        const isMatch = await bcrypt.compare (password, user.password)
+        const isMatch = await bcrypt.compare(password, user.password);
 
-        if(isMatch) {
-            res.redirect('/dashboard')
+        if (isMatch) {
+            const token = jwt.sign({ userId: user._id, name: user.name }, process.env.JWT_SECRET, {
+                expiresIn: '1h'
+            });
+
+            res.cookie('token', token, { httpOnly: true });
+            res.redirect('/dashboard');
         } else {
             return res.status(400).send('Invalid username or password');
         }
@@ -204,4 +210,10 @@ exports.userLoginSubmit = async(req,res) =>{
     } catch (error) {
         console.log(error);
     }
+};
+
+
+exports.userLogout = (req, res) => {
+    res.clearCookie('token');
+    res.redirect('/login');
 }
