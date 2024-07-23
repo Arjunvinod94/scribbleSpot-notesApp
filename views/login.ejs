@@ -102,16 +102,37 @@
 <div class="login-page">
     <div class="form">
       <form class="register-form" action="/register" method="post">
-        <input type="text" name="name" placeholder="name"/>
-        <input type="email" name="email" placeholder="email address"/>
-        <input type="password" name="password" placeholder="password"/>
-        <input type="password" name="confirmPassword" placeholder="confirm password"/>
+        <input type="text" required name="name" placeholder="name"/>
+        <input type="email" required name="email" placeholder="email address"/>
+        <input type="password" required name="password" placeholder="password"/>
+        <input type="password" required name="confirmPassword" placeholder="confirm password"/>
+
+        <div class="form-group text-center">
+          <% if(typeof message !=='undefined' ){ %>
+              <p style="color: crimson;">
+                  <%= message %>
+              </p>
+              <% } %>
+        </div>
+
         <button type="submit">create</button>
         <p class="message">Already registered? <a href="#">Sign In</a></p>
       </form>
       <form class="login-form" action="/login" method="post">
-        <input type="email" name="email" placeholder="email"/>
-        <input type="password" name="password" placeholder="password"/>
+        <input type="email" required name="email" placeholder="email"/>
+        <input type="password" required name="password" placeholder="password"/>
+        <div class="form-group text-center">
+          <% if(typeof errorMessage !=='undefined' ){ %>
+              <p style="color: crimson;">
+                  <%= errorMessage %>
+              </p>
+              <% } %>
+          <% if(typeof Message !=='undefined' ){ %>
+              <p style="color: rgb(0, 190, 41);">
+                  <%= Message %>
+              </p>
+              <% } %>
+        </div>
         <button type="submit">login</button>
         <p class="message">Not registered? <a href="#">Create an account</a></p>
       </form>
