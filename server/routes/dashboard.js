@@ -12,4 +12,8 @@ router.post('/dashboard/add', dashboardController.dashboardAddNoteSubmit)
 router.get('/dashboard/search', dashboardController.dashboardSearch)
 router.post('/dashboard/search', dashboardController.dashboardSearchSubmit)
 
+//user
+router.get('/login',dashboardController.userLogin)
+router.post('/register',dashboardController.userRegisterSumit)
+router.post('/login',dashboardController.userLoginSubmit)
 module.exports = router

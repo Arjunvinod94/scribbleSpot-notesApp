@@ -1,5 +1,7 @@
 const Note = require('../models/Notes')
+const User = require('../models/Users')
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 
 //Dashboard
 exports.dashboard = async(req,res) =>{
@@ -131,6 +133,73 @@ exports.dashboardSearchSubmit = async(req,res) =>{
                 layout: '../views/layouts/dashboard'
             })
 
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+exports.userLogin = async(req,res) =>{
+    try {
+        res.render('login')
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+exports.userRegisterSumit = async(req,res) =>{
+    try {
+        const {name, email, password, confirmPassword} = req.body
+
+        const user = await User.findOne({email: email})
+        if(user) {
+            return res.status(400).send(`User already exist`);
+        } else {
+
+            if(password !== confirmPassword) {
+                return res.status(400).send(`Password doesn't match`);
+            } else {
+                
+                const saltRounds = 10
+                const hashPassword = await bcrypt.hash(password, saltRounds)
+                
+                
+                const newUser = new User({
+                    name,
+                    email,
+                    password : hashPassword,
+                    is_verified: 1
+                })
+
+                await newUser.save()
+                res.redirect('/login')
+
+            }
+
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+exports.userLoginSubmit = async(req,res) =>{
+    try {
+        const {email, password} = req.body
+
+        const user = await User.findOne({email: email})
+        if(!user) {
+            //change this later
+            return res.status(400).send('Invalid username or password');
+        }
+
+        const isMatch = await bcrypt.compare (password, user.password)
+
+        if(isMatch) {
+            res.redirect('/dashboard')
+        } else {
+            return res.status(400).send('Invalid username or password');
+        }
 
     } catch (error) {
         console.log(error);
