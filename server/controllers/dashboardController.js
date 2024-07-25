@@ -11,8 +11,9 @@ exports.dashboard = async(req,res, next) => {
     let page = req.query.page || 1;
 
     const locals = {
-        title: 'scribbleSpot - Dashboard',
-        description: 'A Notes App'
+        title: 'Dashboard - scribbleSpot',
+        description: 'A Simple Notes App',
+        img: '/img/favicon.ico'
     }
 
     try {
@@ -59,6 +60,12 @@ exports.dashboard = async(req,res, next) => {
 
 
 exports.dashboardViewNote = async (req, res, next) => {
+    const locals = {
+        title: 'View Note - scribbleSpot',
+        description: 'A Simple Notes App',
+        img: '/img/favicon.ico'
+    }
+
     try {
         const note = await Note.findOne({ _id: req.params.id, user: req.user.userId });
         
@@ -66,7 +73,8 @@ exports.dashboardViewNote = async (req, res, next) => {
             res.render('dashboard/view-note', {
                 noteID: req.params.id,
                 note,
-                layout: '../views/layouts/dashboard'
+                layout: '../views/layouts/dashboard',
+                locals
             });
         } else {
             res.send("Something went wrong");
@@ -111,9 +119,16 @@ exports.dashboardDeleteNote = async (req, res, next) => {
 }
 
 exports.dashboardAddNote = async (req, res, next) => {
+    const locals = {
+        title: 'Add Note - scribbleSpot',
+        description: 'A Simple Notes App',
+        img: '/img/favicon.ico'
+    }
+
     try {
         res.render('dashboard/add', {
-            layout: '../views/layouts/dashboard'
+            layout: '../views/layouts/dashboard',
+            locals
         });
     } catch (error) {
         console.log(error);
@@ -138,10 +153,17 @@ exports.dashboardAddNoteSubmit = async (req, res, next) => {
 }
 
 exports.dashboardSearch = async (req, res, next) => {
+    const locals = {
+        title: 'Search - scribbleSpot',
+        description: 'A Simple Notes App',
+        img: '/img/favicon.ico'
+    }
+
     try {
         res.render('dashboard/search', {
             searchResults: '',
-            layout: '../views/layouts/dashboard'
+            layout: '../views/layouts/dashboard',
+            locals
         });
     } catch (error) {
         console.log(error);
@@ -150,6 +172,11 @@ exports.dashboardSearch = async (req, res, next) => {
 }
 
 exports.dashboardSearchSubmit = async (req, res, next) => {
+    const locals = {
+        title: 'Search - scribbleSpot',
+        description: 'A Simple Notes App',
+        img: '/img/favicon.ico'
+    }
     try {
         let searchTerm = req.body.searchTerm;
         const searchNoSpecialChars = searchTerm.replace(/[^a-zA-Z0-9 ]/g, "");
@@ -163,7 +190,8 @@ exports.dashboardSearchSubmit = async (req, res, next) => {
 
         res.render('dashboard/search', {
             searchResults,
-            layout: '../views/layouts/dashboard'
+            layout: '../views/layouts/dashboard',
+            locals
         });
     } catch (error) {
         console.log(error);
@@ -172,8 +200,15 @@ exports.dashboardSearchSubmit = async (req, res, next) => {
 }
 
 exports.userLogin = async(req,res) =>{
+    const locals = {
+        title: 'Login - scribbleSpot',
+        description: 'A Simple Notes App',
+        img: '/img/favicon.ico'
+    }
     try {
-        res.render('login')
+        res.render('login', {
+            locals
+        })
     } catch (error) {
         console.log(error);
     }
@@ -221,7 +256,7 @@ exports.userLoginSubmit = async (req, res) => {
 
         const user = await User.findOne({ email });
         if (!user) {
-            res.render('login', {errorMessage: 'Account not found. Create new account'})
+            return res.render('login', {errorMessage: 'Account not found. Create new account'})
         }
 
         const isMatch = await bcrypt.compare(password, user.password);

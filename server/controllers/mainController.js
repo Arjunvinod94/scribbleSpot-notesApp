@@ -1,8 +1,9 @@
 //HomePage
 exports.homepage = async(req,res) =>{
         const locals = {
-            title: 'scribbleSpot - Home',
-            description: 'A Notes App'
+            title: 'Home - scribbleSpot',
+            description: 'A Notes App',
+            img: '/img/favicon.ico'
         }
         res.render('index', {
             locals,
@@ -13,8 +14,9 @@ exports.homepage = async(req,res) =>{
 //About
 exports.about = async(req,res) =>{
         const locals = {
-            title: 'scribbleSpot - About',
-            description: 'A Notes App'
+            title: 'About - scribbleSpot',
+            description: 'A Notes App',
+            img: '/img/favicon.ico'
         }
         res.render('about', locals)
 }
