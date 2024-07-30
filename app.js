@@ -1,8 +1,8 @@
 require('dotenv').config()
 
 //new db connection
-const mongoose = require("mongoose")
-mongoose.connect("mongodb://127.0.0.1:27017/scribbleSpot")
+// const mongoose = require("mongoose")
+// mongoose.connect("mongodb://127.0.0.1:27017/scribbleSpot")
 
 
 const express = require('express')
@@ -10,10 +10,10 @@ const expressLayouts = require('express-ejs-layouts')
 const methodOverride = require('method-override')
 const cookieParser = require('cookie-parser');
 const nocache = require('nocache');
-// const connectDB = require('./server/config/db')
+const connectDB = require('./server/config/db')
 // const session = require('express-session')
 // const passport = require('passport')
-// const MongoStore = require('connect-mongo')
+const MongoStore = require('connect-mongo')
 
 const app = express()
 const port = 5000 || process.env.PORT
@@ -28,7 +28,7 @@ app.use(methodOverride("_method"))
 app.use(cookieParser());
 
 //Connect to DB
-// connectDB()
+connectDB()
 
 //Static Files
 app.use(express.static('public'))
